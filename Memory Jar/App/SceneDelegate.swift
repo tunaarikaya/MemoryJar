@@ -11,14 +11,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
   
-        guard let windowScene = (scene as? UIWindowScene)else {return}
+        guard let windowScene = (scene as? UIWindowScene) else { return }
         let tabBarController = UITabBarController()
         
+        // TabBar renklerini bal temasına ayarla ✨
+        tabBarController.tabBar.tintColor = UIColor(hex: "#FF8F00")
+        tabBarController.tabBar.unselectedItemTintColor = UIColor(hex: "#C4976C")
+        tabBarController.tabBar.backgroundColor = UIColor(hex: "#F0EAE0")
+
+        // TabBar'ı daha compact yap ✨
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(hex: "#F0EAE0")
+
+        // Title spacing'i ayarla
+        appearance.stackedLayoutAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -3)
+        appearance.stackedLayoutAppearance.selected.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -3)
+
+        // Appearance'ı uygula
+        tabBarController.tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBarController.tabBar.scrollEdgeAppearance = appearance
+        }
+        
         //Tabbarı yazıyoruz
-        let homeVC = HomeViewController() // UIViewController() yerine
+        let homeVC = HomeViewController()
         homeVC.title = "Memory Jar"
         homeVC.tabBarItem = UITabBarItem(title: "Memory Jar", image: UIImage(systemName: "archivebox"), tag: 0)
         
@@ -28,18 +47,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let settingsVC = UIViewController()
         settingsVC.title = "Settings"
-        settingsVC.tabBarItem = UITabBarItem(title: "Settings", image:UIImage(systemName: "gearshape.fill") , tag: 2)
+        settingsVC.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gearshape.fill"), tag: 2)
         
         let homeNav = UINavigationController(rootViewController: homeVC)
         let memoriesNav = UINavigationController(rootViewController: memoriesVC)
         let settingsNav = UINavigationController(rootViewController: settingsVC)
         
         //tabbara ekliyoruz
-        tabBarController.viewControllers = [homeNav,memoriesNav,settingsNav]
-        
+        tabBarController.viewControllers = [homeNav, memoriesNav, settingsNav]
         
         window = UIWindow(windowScene: windowScene)
-        //windowumuzu olusturduk simdi rootview controller atamalıyız ona
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
@@ -74,7 +91,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
-
-
 }
 
