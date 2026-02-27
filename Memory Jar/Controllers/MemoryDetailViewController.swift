@@ -2,7 +2,7 @@
 //  MemoryDetailViewController.swift
 //  Memory Jar
 //
-//  Created by Antigravity on 27.02.2026.
+//  Created by Tuna Arıkaya on 27.02.2026.
 //
 
 import UIKit
