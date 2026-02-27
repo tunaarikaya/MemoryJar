@@ -11,12 +11,20 @@ import SnapKit
 class MemoriesViewController: UIViewController {
     
     private let tableView = UITableView()
-    private var memories: [Memory] = []
+    private let calendarView = UICalendarView()
     
+    private var allMemories: [Memory] = []
+    private var filteredMemories: [Memory] = []
+    private var selectedDate: DateComponents?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupLayout()
+        
+        // Varsayılan olarak bugünü seç
+        let today = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        selectedDate = today
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -26,37 +34,98 @@ class MemoriesViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = UIColor(hex: "#FFF8E1")
-        title = "All Memories"
+        title = "Timeline"
         navigationController?.navigationBar.prefersLargeTitles = true
         
+        // Calendar Setup
+        calendarView.calendar = .current
+        calendarView.locale = .current
+        calendarView.fontDesign = .rounded
+        calendarView.tintColor = UIColor(hex: "#FF8F00")
+        calendarView.backgroundColor = .white.withAlphaComponent(0.5)
+        calendarView.layer.cornerRadius = 20
+        calendarView.clipsToBounds = true
+        
+        let selection = UICalendarSelectionSingleDate(delegate: self)
+        calendarView.selectionBehavior = selection
+        
+        // TableView Setup
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.register(MemoryCell.self, forCellReuseIdentifier: "MemoryCell")
+        tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 20, right: 0)
     }
     
     private func setupLayout() {
-        view.addSubview(tableView)
+        [calendarView, tableView].forEach { view.addSubview($0) }
+        
+        calendarView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(calendarView.snp.bottom).offset(16)
+            make.leading.trailing.bottom.equalToSuperview()
         }
     }
     
     private func fetchMemories() {
-        memories = CoreDataManager.shared.fetchAllMemories().sorted(by: { ($0.date ?? Date()) > ($1.date ?? Date()) })
+        allMemories = CoreDataManager.shared.fetchAllMemories().sorted(by: { ($0.date ?? Date()) > ($1.date ?? Date()) })
+        filterMemories()
+    }
+    
+    private func filterMemories() {
+        guard let selectedDate = selectedDate else {
+            filteredMemories = allMemories
+            tableView.reloadData()
+            return
+        }
+        
+        let calendar = Calendar.current
+        filteredMemories = allMemories.filter { memory in
+            guard let date = memory.date else { return false }
+            let components = calendar.dateComponents([.year, .month, .day], from: date)
+            return components.year == selectedDate.year &&
+                   components.month == selectedDate.month &&
+                   components.day == selectedDate.day
+        }
+        
         tableView.reloadData()
+    }
+}
+
+extension MemoriesViewController: UICalendarSelectionSingleDateDelegate {
+    func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
+        self.selectedDate = dateComponents
+        filterMemories()
     }
 }
 
 extension MemoriesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return memories.count
+        if filteredMemories.isEmpty {
+            showEmptyState()
+        } else {
+            tableView.backgroundView = nil
+        }
+        return filteredMemories.count
+    }
+    
+    private func showEmptyState() {
+        let emptyLabel = UILabel()
+        emptyLabel.text = "No memories for this day 🍯"
+        emptyLabel.textAlignment = .center
+        emptyLabel.textColor = UIColor(hex: "#C4976C")
+        emptyLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        tableView.backgroundView = emptyLabel
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MemoryCell", for: indexPath) as! MemoryCell
-        let memory = memories[indexPath.row]
+        let memory = filteredMemories[indexPath.row]
         cell.configure(with: memory)
         return cell
     }
