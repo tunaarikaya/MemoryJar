@@ -13,23 +13,27 @@ class MemoriesViewController: UIViewController {
     private let tableView = UITableView()
     private let calendarView = UICalendarView()
     
-    private var allMemories: [Memory] = []
-    private var filteredMemories: [Memory] = []
-    private var selectedDate: DateComponents?
+    // ViewModel
+    private let viewModel = MemoriesViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupLayout()
-        
-        // Varsayılan olarak bugünü seç
-        let today = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-        selectedDate = today
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        viewModel.onDataUpdated = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchMemories()
+        viewModel.fetchMemories()
     }
     
     private func setupUI() {
@@ -71,47 +75,22 @@ class MemoriesViewController: UIViewController {
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
-    
-    private func fetchMemories() {
-        allMemories = CoreDataManager.shared.fetchAllMemories().sorted(by: { ($0.date ?? Date()) > ($1.date ?? Date()) })
-        filterMemories()
-    }
-    
-    private func filterMemories() {
-        guard let selectedDate = selectedDate else {
-            filteredMemories = allMemories
-            tableView.reloadData()
-            return
-        }
-        
-        let calendar = Calendar.current
-        filteredMemories = allMemories.filter { memory in
-            guard let date = memory.date else { return false }
-            let components = calendar.dateComponents([.year, .month, .day], from: date)
-            return components.year == selectedDate.year &&
-                   components.month == selectedDate.month &&
-                   components.day == selectedDate.day
-        }
-        
-        tableView.reloadData()
-    }
 }
 
 extension MemoriesViewController: UICalendarSelectionSingleDateDelegate {
     func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        self.selectedDate = dateComponents
-        filterMemories()
+        viewModel.selectedDate = dateComponents
     }
 }
 
 extension MemoriesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if filteredMemories.isEmpty {
+        if viewModel.numberOfRows == 0 {
             showEmptyState()
         } else {
             tableView.backgroundView = nil
         }
-        return filteredMemories.count
+        return viewModel.numberOfRows
     }
     
     private func showEmptyState() {
@@ -125,13 +104,13 @@ extension MemoriesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MemoryCell", for: indexPath) as! MemoryCell
-        let memory = filteredMemories[indexPath.row]
+        let memory = viewModel.memory(at: indexPath.row)
         cell.configure(with: memory)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let memory = memories[indexPath.row]
+        let memory = viewModel.memory(at: indexPath.row)
         let detailVC = MemoryDetailViewController(memory: memory)
         let navController = UINavigationController(rootViewController: detailVC)
         present(navController, animated: true)

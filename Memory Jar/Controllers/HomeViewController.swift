@@ -24,6 +24,9 @@ class HomeViewController: UIViewController {
     private let welcomeCardView = UIView()
     private let welcomeLabel = UILabel()
     
+    // ViewModel
+    private let viewModel = HomeViewModel()
+    
     // Gradient Layer oluştur
     let gradientLayer = CAGradientLayer()
    
@@ -35,8 +38,27 @@ class HomeViewController: UIViewController {
         
         setupUI()
         setupLayout()
-
-        // Do any additional setup after loading the view.
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        viewModel.onShowRandomMemory = { [weak self] memory in
+            let detailVC = MemoryDetailViewController(memory: memory)
+            let navController = UINavigationController(rootViewController: detailVC)
+            
+            if let sheet = navController.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            self?.present(navController, animated: true)
+        }
+        
+        viewModel.onEmptyJar = { [weak self] in
+            let alert = UIAlertController(title: "The Jar is Empty!", message: "Add some memories first to pull one out! ✨", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(alert, animated: true)
+        }
     }
     
     private func setupUI(){
@@ -160,21 +182,7 @@ class HomeViewController: UIViewController {
     
 
     @objc private func randomMemoryTapped() {
-        if let randomMemory = CoreDataManager.shared.fetchRandomMemory() {
-            let detailVC = MemoryDetailViewController(memory: randomMemory)
-            let navController = UINavigationController(rootViewController: detailVC)
-            
-            if let sheet = navController.sheetPresentationController {
-                sheet.detents = [.medium(), .large()]
-                sheet.prefersGrabberVisible = true
-            }
-            
-            present(navController, animated: true)
-        } else {
-            let alert = UIAlertController(title: "The Jar is Empty!", message: "Add some memories first to pull one out! ✨", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        }
+        viewModel.pullRandomMemory()
     }
 }
 

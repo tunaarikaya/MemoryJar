@@ -22,6 +22,8 @@ class AddMemoryViewController: UIViewController, UIImagePickerControllerDelegate
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     
+    private let viewModel = AddMemoryViewModel()
+    
     private var imageContainerHeightConstraint: Constraint?
 
     override func viewDidLoad() {
@@ -30,6 +32,19 @@ class AddMemoryViewController: UIViewController, UIImagePickerControllerDelegate
         setupNavigationBar()
         setupUI()
         setupLayout()
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        viewModel.onSaveSuccess = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+        
+        viewModel.onSaveFailure = { [weak self] message in
+            let alert = UIAlertController(title: "Oops!", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(alert, animated: true)
+        }
     }
     
     private func setupNavigationBar() {
@@ -165,26 +180,11 @@ class AddMemoryViewController: UIViewController, UIImagePickerControllerDelegate
     }
     
     @objc private func saveTapped() {
-        guard let text = memoryTextView.text, !text.isEmpty else {
-            let alert = UIAlertController(title: "Empty Memory", message: "Please write something to save your memory!", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-            return
-        }
-        
-        let success = CoreDataManager.shared.saveMemory(
-            text: text,
+        viewModel.saveMemory(
+            text: memoryTextView.text,
             date: datePicker.date,
             image: memoryImageView.image
         )
-        
-        if success {
-            dismiss(animated: true)
-        } else {
-            let alert = UIAlertController(title: "Error", message: "Could not save memory. Please try again.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        }
     }
     
     @objc private func dateChanged() {
