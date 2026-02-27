@@ -1,58 +1,52 @@
 # 🍯 Memory Jar
 
 <p align="center">
-  <img src="screenshots/b1.png" width="30%" />
-  <img src="screenshots/b2.png" width="30%" />
-  <img src="screenshots/b3.png" width="30%" />
+  <img src="screenshots/b1.png" width="31%" />
+  <img src="screenshots/b3.png" width="31%" />
+  <img src="screenshots/b2.png" width="31%" />
 </p>
 
-**Memory Jar** is a minimalist iOS application built with a modern **MVVM architecture**, designed to help you capture and cherish your most precious moments. Instead of scrolling through an endless feed, Memory Jar encourages a mindful approach: put your memories in the jar, and pull one out randomly whenever you need a boost of joy.
+**Memory Jar** is a minimalist, premium iOS application designed to help users capture and cherish life's most precious moments with a mindful approach. Built with a focus on high-quality code standards and a warm, inviting aesthetic.
 
-## ✨ Features
+## 🚀 Key Features
 
-- **Modern MVVM Architecture**: The entire app is built using the Model-View-ViewModel pattern for clean, maintainable, and testable code.
-- **Minimalist Honey Theme**: A clean, warm UI featuring glassmorphism and soft shadows.
-- **Easy Capture**: Quickly add new memories with photos, text, and dates.
-- **The Jar Logic**: No lists, no searching. Just press a button to pull a random memory from your jar.
-- **Interactive Timeline**: A specialized `Memories` tab featuring a `UICalendarView`. Select any date to filter and view memories from that specific day.
-- **Data Management**: Full control over your data with the ability to clear your jar directly from the settings.
-- **Privacy First**: All your memories are stored locally on your device using Core Data.
+- **🧠 Advanced MVVM Architecture**: Pure separation of concerns using the Model-View-ViewModel pattern for scalability and testability.
+- **📅 Interactive Timeline**: Explore your journey through a native `UICalendarView` integration, filtering memories with precision.
+- **✨ Premium UI/UX**: Soft honey-themed palette, glassmorphism effects, and SnapKit-powered responsive layouts.
+- **🎲 Random Recall**: Shake off nostalgia by pulling a random memory from your jar with one tap.
+- **🔒 Local & Private**: 100% offline experience using Core Data for secure persistence on your device.
 
-## 🚀 Getting Started
+## 🛠 Tech Stack & Tools
 
-### Prerequisites
+| Category | Technology |
+| :--- | :--- |
+| **Language** | Swift 5.9+ |
+| **Architecture** | MVVM |
+| **UI Framework** | UIKit (Programmatic UI) |
+| **Layout** | SnapKit (Auto Layout) |
+| **Persistence** | Core Data |
+| **Components** | UICalendarView, UIContextualMenu, Diffable Data Sources |
+| **Design** | Honey Palette, Glassmorphism, SF Symbols 5 |
 
-- Xcode 15.0+
-- iOS 17.0+
-- Swift 5.9+
+## 📖 Architecture Deep Dive
 
-### Installation
+The project demonstrates a production-ready application structure:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/tunaarikaya/MemoryJar.git
-   ```
-2. Open `Memory Jar.xcodeproj` in Xcode.
-3. Build and run on your simulator or physical device!
-
-## 🛠 Tech Stack
-
-- **Architecture**: MVVM (Model-View-ViewModel)
-- **UI Framework**: UIKit
-- **Layout Management**: SnapKit
-- **Data Persistence**: Core Data
-- **Language**: Swift
-
-## 📖 Project Structure
-
-The project has been carefully organized to reflect the MVVM pattern:
-
-- **Controllers (`View`)**: `HomeViewController`, `AddMemoryViewController`, `MemoriesViewController`, `SettingsViewController`, `MemoryDetailViewController`.
-- **ViewModels (`ViewModel`)**: `HomeViewModel`, `AddMemoryViewModel`, `MemoriesViewModel`, `SettingsViewModel`.
-- **Managers (`Model/Service`)**: `CoreDataManager` acting as the single source of truth for all local database operations.
+- **ViewModels**: Business logic and state management are isolated, communicating with Views via callbacks.
+- **Managers**: Centralized `CoreDataManager` acting as a robust service layer.
+- **Programmatic UI**: No Storyboards or XIBs. Every pixel is defined in code for maximum flexibility and version control clarity.
 
 ---
 
-<p align="center">
-Developed with ❤️ by <a href="https://github.com/tunaarikaya">Tuna Arıkaya</a>
+## 📫 Connect with Me
+
+<p align="left">
+  <a href="https://github.com/tunaarikaya">
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <a href="https://linkedin.com/in/tunaarikaya">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
 </p>
+
+Developed with ❤️ by **[Tuna Arıkaya](https://github.com/tunaarikaya)**
