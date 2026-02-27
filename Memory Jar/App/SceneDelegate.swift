@@ -41,12 +41,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         homeVC.title = "Memory Jar"
         homeVC.tabBarItem = UITabBarItem(title: "Memory Jar", image: UIImage(systemName: "archivebox"), tag: 0)
         
-        let memoriesVC = UIViewController()
-        memoriesVC.title = "Memories"
+        let memoriesVC = MemoriesViewController()
         memoriesVC.tabBarItem = UITabBarItem(title: "Memories", image: UIImage(systemName: "heart.rectangle"), tag: 1)
         
-        let settingsVC = UIViewController()
-        settingsVC.title = "Settings"
+        let settingsVC = SettingsViewController()
         settingsVC.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gearshape.fill"), tag: 2)
         
         let homeNav = UINavigationController(rootViewController: homeVC)

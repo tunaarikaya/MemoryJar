@@ -51,4 +51,19 @@ class CoreDataManager {
         let memories = fetchAllMemories()
         return memories.randomElement()
     }
+    
+    func deleteAllMemories() -> Bool {
+        let memories = fetchAllMemories()
+        for memory in memories {
+            context.delete(memory)
+        }
+        
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Error deleting memories: \(error)")
+            return false
+        }
+    }
 }
