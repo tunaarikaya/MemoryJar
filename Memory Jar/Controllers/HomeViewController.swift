@@ -63,6 +63,7 @@ class HomeViewController: UIViewController {
         randomMemoryButton.layer.cornerRadius = 12
         randomMemoryButton.layer.borderWidth = 1
         randomMemoryButton.layer.borderColor = darkHoney.cgColor    // 🔄 Koyu bal border
+        randomMemoryButton.addTarget(self, action: #selector(randomMemoryTapped), for: .touchUpInside)
         
      
         
@@ -158,6 +159,23 @@ class HomeViewController: UIViewController {
     }
     
 
+    @objc private func randomMemoryTapped() {
+        if let randomMemory = CoreDataManager.shared.fetchRandomMemory() {
+            let detailVC = MemoryDetailViewController(memory: randomMemory)
+            let navController = UINavigationController(rootViewController: detailVC)
+            
+            if let sheet = navController.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            present(navController, animated: true)
+        } else {
+            let alert = UIAlertController(title: "The Jar is Empty!", message: "Add some memories first to pull one out! ✨", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+        }
+    }
 }
 
 

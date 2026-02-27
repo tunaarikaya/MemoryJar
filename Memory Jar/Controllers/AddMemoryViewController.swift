@@ -165,8 +165,26 @@ class AddMemoryViewController: UIViewController, UIImagePickerControllerDelegate
     }
     
     @objc private func saveTapped() {
-        print("save tapped")
-        // Save logic gelecek
+        guard let text = memoryTextView.text, !text.isEmpty else {
+            let alert = UIAlertController(title: "Empty Memory", message: "Please write something to save your memory!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        
+        let success = CoreDataManager.shared.saveMemory(
+            text: text,
+            date: datePicker.date,
+            image: memoryImageView.image
+        )
+        
+        if success {
+            dismiss(animated: true)
+        } else {
+            let alert = UIAlertController(title: "Error", message: "Could not save memory. Please try again.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+        }
     }
     
     @objc private func dateChanged() {
