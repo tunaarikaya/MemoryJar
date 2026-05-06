@@ -16,7 +16,7 @@
 - **🎲 Random Recall**: Shake off nostalgia by pulling a random memory from your jar with one tap.
 - **🔒 Local & Private**: 100% offline experience using Core Data for secure persistence on your device.
 
-## 🛠 Tech Stack & Tools
+## 🛠 Tech Stack & Tool
 
 | Category | Technology |
 | :--- | :--- |
