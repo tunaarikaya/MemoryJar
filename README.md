@@ -1,4 +1,4 @@
-# 🍯 Memory Jarr
+# 🍯 Memory Jar
 
 <p align="center">
   <img src="screenshots/b1.png" width="31%" />
